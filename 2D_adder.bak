@@ -1,6 +1,8 @@
 .include "C:\Users\Shameena\Downloads\50002\50002\nominal.jsim"
 .include "C:\Users\Shameena\Downloads\50002\50002\stdcell.jsim"
-.include "C:\Users\Shameena\Downloads\50002\50002\2dcheckoff_100ns.jsim"
+.include "C:\Users\Shameena\Downloads\50002\50002\2dcheckoff_6ns.jsim"
+
+
 .subckt fa a b ci s co
 Xxor1 a b l xor2 
 Xxor2 l ci s xor2
@@ -18,11 +20,27 @@ Xand2 c d s 2 and3
 Xor 1 2 v or2
 .ends
 
+*PG block
+.subckt PG Pij Gij Pj1k Gj1k Pik Gik 
+XPik Pij Pj1k Pik and2
+XPGand Gij Pj1k out and2
+XGik Gj1k out Gik or2
+.ends
+
+*PG block Carry
+.subckt 
+
+
+
 *Part (A)
 .subckt adder32 op0 A[31:0] B[31:0] s[31:0] z v n
-XFA321 A0 XB0 op0 s0 C0 fa
-XFA32 A[31:1] XB[31:1] C[30:0] s[31:1] C[31:1] fa
 XCB B[31:0] op0#32 XB[31:0] xor2
+
+
+
+
+
+
 Xnor1 s[31:24] s[23:16] s[15:8] s[7:0] o1[7:0] nor4
 Xnand2 o1[7:6] o1[5:4] o1[3:2] o1[1:0] o2[1:0] nand4
 Xnor3 o21 o20 z nor2
