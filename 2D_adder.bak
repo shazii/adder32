@@ -1,6 +1,6 @@
 .include "C:\Users\Shameena\Downloads\50002\50002\nominal.jsim"
 .include "C:\Users\Shameena\Downloads\50002\50002\stdcell.jsim"
-.include "C:\Users\Shameena\Downloads\50002\50002\2dcheckoff_6ns.jsim"
+.include "C:\Users\Shameena\Downloads\50002\50002\2dcheckoff_100ns.jsim"
 
 
 .subckt fa a b ci s co
@@ -20,15 +20,35 @@ Xand2 c d s 2 and3
 Xor 1 2 v or2
 .ends
 
-*PG block
-.subckt PG Pij Gij Pj1k Gj1k Pik Gik 
-XPik Pij Pj1k Pik and2
-XPGand Gij Pj1k out and2
-XGik Gj1k out Gik or2
+*PG block takes inverted inputs and produces non-inverted outputs
+.subckt PG Pij_inv Gij_inv Pj1k_inv Gj1k_inv Ci_inv Pik Gik Cj1 
+XPik Pij_inv Pj1k_inv Pik nor2
+XPGand Gij_inv Pj1k_inv out_inv and2
+XGik Gj1k_inv out_inv Gik nand2
+XPCand Pij_inv Ci_inv outC_inv and2
+XCj1 Gij_inv outC_inv Cj1 nand2
 .ends
 
-*PG block Carry
-.subckt 
+*PG block takes non-inverted inputs and produces inverted outputs
+.subckt PG_inv Pij Gij Pj1k Gj1k Ci Pik_inv Gik_inv Cj1_inv
+XPik Pij Pj1k Pik_inv nand2
+XPGand Gij Pj1k out and2
+XGik Gj1k out Gik_inv nand2
+XPCand Pij Ci outC and2
+XCj1 Gij outC Cj1_inv nand2
+.ends
+
+*PG block Carry takes in inverted input and produces non-inverted outputs
+.subckt PGC Gij_inv Pij_inv Ci_inv Cj1 
+XPCand Pij_inv Ci_inv outC_inv and2
+XCj1 Gij_inv outC_inv Cj1 nand2
+.ends
+
+*PG block Carry takes in non-inverted input and produces inverted outputs
+.subckt PGC_inv Gij Pij Ci Cj1_inv 
+XPCand Pij Ci outC and2
+XCj1 Gij outC Cj1_inv nand2
+.ends
 
 
 
@@ -47,10 +67,5 @@ Xnor3 o21 o20 z nor2
 Xoverflow A31 XB31 s31 v overflow
 .connect n s31
 .ends
-
-
-
-
-
 
 
