@@ -1,6 +1,6 @@
-.include "D:/Downloads/50002/50002/nominal.jsim"
-.include "D:/Downloads/50002/50002/stdcell.jsim"
-.include "D:/Downloads/50002/50002/2dcheckoff_100ns.jsim"
+.include "C:\Users\Shameena\Downloads\50002\50002\nominal.jsim"
+.include "C:\Users\Shameena\Downloads\50002\50002\stdcell.jsim"
+.include "C:\Users\Shameena\Downloads\50002\50002\2dcheckoff_100ns.jsim"
 
 .subckt fa a b ci s co
 Xxor1 a b l xor2 
@@ -29,7 +29,7 @@ Xxor2 P_ C S xor2
 
 .subckt module2 G0 G1 G2 P0 P1 P2 Ci Ci_ Cj
 Xand1 P0 Ci T1 and2
-Xor1 T G0 Cj or2
+Xor1 T1 G0 Cj or2
 Xand2 P0 P1 P2 and2
 Xand3 P1 G0 T2 and2
 Xor2 G1 T2 G2 or2
@@ -43,10 +43,9 @@ Xtem B[31:0] op0#32 XB[31:0] xor2
 Xinv1 A[31:0] _A[31:0] inverter
 Xinv2 XB[31:0] _XB[31:0] inverter
 
-Xxor A[31:0] XB[31:0] P[31:0] xor2
-Xand _A[31:0] _XB[31:0] G[31:0] nor2 // means a and b
 
-XA A[31:0] B[31:0] C[31:0] S[31:0] G[31:0] P[31:0] module1
+
+XA A[31:0] XB[31:0] C[31:0] S[31:0] G[31:0] P[31:0] module1
 
 XB_1 G0 G1 Q1000 P0 P1 W1000 T1000 C0 C1 module2
 XB_2 G2 G3 Q1001 P2 P3 W1001 T1001 C2 C3 module2
