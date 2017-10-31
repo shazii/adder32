@@ -1,7 +1,6 @@
-.include "C:\Users\Shameena\Downloads\50002\50002\nominal.jsim"
-.include "C:\Users\Shameena\Downloads\50002\50002\stdcell.jsim"
-.include "C:\Users\Shameena\Downloads\50002\50002\2dcheckoff_100ns.jsim"
-
+.include "D:/Downloads/50002/50002/nominal.jsim"
+.include "D:/Downloads/50002/50002/stdcell.jsim"
+.include "D:/Downloads/50002/50002/2dcheckoff_100ns.jsim"
 
 .subckt fa a b ci s co
 Xxor1 a b l xor2 
@@ -12,60 +11,86 @@ Xnand3 3 2 co nand2
 .ends
 
 .subckt overflow a b s v
-Xinva a c inverter
-Xinvb b d inverter
-Xinvs s s1 inverter
-Xand1 a b s1 1 and3
-Xand2 c d s 2 and3
-Xor 1 2 v or2
+Xinv1 s _s inverter
+Xinv2 a _a inverter
+Xinv3 b _b inverter
+Xnand3_1 a b _s x1 nand3
+Xnand3_2 _a _b s x2 nand3
+Xnand2_1 x1 x2 v nand2
 .ends
 
-*PG block takes inverted inputs and produces non-inverted outputs
-.subckt PG Pij_inv Gij_inv Pj1k_inv Gj1k_inv Ci_inv Pik Gik Cj1 
-XPik Pij_inv Pj1k_inv Pik nor2
-XPGand Gij_inv Pj1k_inv out_inv and2
-XGik Gj1k_inv out_inv Gik nand2
-XPCand Pij_inv Ci_inv outC_inv and2
-XCj1 Gij_inv outC_inv Cj1 nand2
-.ends
-
-*PG block takes non-inverted inputs and produces inverted outputs
-.subckt PG_inv Pij Gij Pj1k Gj1k Ci Pik_inv Gik_inv Cj1_inv
-XPik Pij Pj1k Pik_inv nand2
-XPGand Gij Pj1k out and2
-XGik Gj1k out Gik_inv nand2
-XPCand Pij Ci outC and2
-XCj1 Gij outC Cj1_inv nand2
-.ends
-
-*PG block Carry takes in inverted input and produces non-inverted outputs
-.subckt PGC Gij_inv Pij_inv Ci_inv Cj1 
-XPCand Pij_inv Ci_inv outC_inv and2
-XCj1 Gij_inv outC_inv Cj1 nand2
-.ends
-
-*PG block Carry takes in non-inverted input and produces inverted outputs
-.subckt PGC_inv Gij Pij Ci Cj1_inv 
-XPCand Pij Ci outC and2
-XCj1 Gij outC Cj1_inv nand2
+.subckt module1 A B C S G P
+Xor1 A B P or2
+Xand1 A B G and2
+Xxor1 A B P_ xor2
+Xxor2 P_ C S xor2
 .ends
 
 
+.subckt module2 G0 G1 G2 P0 P1 P2 Ci Ci_ Cj
+Xand1 P0 Ci T1 and2
+Xor1 T G0 Cj or2
+Xand2 P0 P1 P2 and2
+Xand3 P1 G0 T2 and2
+Xor2 G1 T2 G2 or2
+Xbuf Ci Ci_ buffer
+.ends
 
-*Part (A)
-.subckt adder32 op0 A[31:0] B[31:0] s[31:0] z v n
-XCB B[31:0] op0#32 XB[31:0] xor2
+.subckt adder32 op0 A[31:0] B[31:0] S[31:0] z n v
+
+Xtem B[31:0] op0#32 XB[31:0] xor2
+
+Xinv1 A[31:0] _A[31:0] inverter
+Xinv2 XB[31:0] _XB[31:0] inverter
+
+Xxor A[31:0] XB[31:0] P[31:0] xor2
+Xand _A[31:0] _XB[31:0] G[31:0] nor2 // means a and b
+
+XA A[31:0] B[31:0] C[31:0] S[31:0] G[31:0] P[31:0] module1
+
+XB_1 G0 G1 Q1000 P0 P1 W1000 T1000 C0 C1 module2
+XB_2 G2 G3 Q1001 P2 P3 W1001 T1001 C2 C3 module2
+XB_3 G4 G5 Q1002 P4 P5 W1002 T1002 C4 C5 module2
+XB_4 G6 G7 Q1003 P6 P7 W1003 T1003 C6 C7 module2
+XB_5 G8 G9 Q1004 P8 P9 W1004 T1004 C8 C9 module2
+XB_6 G10 G11 Q1005 P10 P11 W1005 T1005 C10 C11 module2
+XB_7 G12 G13 Q1006 P12 P13 W1006 T1006 C12 C13 module2
+XB_8 G14 G15 Q1007 P14 P15 W1007 T1007 C14 C15 module2
+XB_9 G16 G17 Q1008 P16 P17 W1008 T1008 C16 C17 module2
+XB_10 G18 G19 Q1009 P18 P19 W1009 T1009 C18 C19 module2
+XB_11 G20 G21 Q1010 P20 P21 W1010 T1010 C20 C21 module2
+XB_12 G22 G23 Q1011 P22 P23 W1011 T1011 C22 C23 module2
+XB_13 G24 G25 Q1012 P24 P25 W1012 T1012 C24 C25 module2
+XB_14 G26 G27 Q1013 P26 P27 W1013 T1013 C26 C27 module2
+XB_15 G28 G29 Q1014 P28 P29 W1014 T1014 C28 C29 module2
+XB_16 G30 G31 Q1015 P30 P31 W1015 T1015 C30 C31 module2
+
+XB_17 Q1000 Q1001 Q2000 W1000 W1001 W2000 T2000 T1000 T1001 module2
+XB_18 Q1002 Q1003 Q2001 W1002 W1003 W2001 T2001 T1002 T1003 module2
+XB_19 Q1004 Q1005 Q2002 W1004 W1005 W2002 T2002 T1004 T1005 module2 
+XB_20 Q1006 Q1007 Q2003 W1006 W1007 W2003 T2003 T1006 T1007 module2 
+XB_21 Q1008 Q1009 Q2004 W1008 W1009 W2004 T2004 T1008 T1009 module2 
+XB_22 Q1010 Q1011 Q2005 W1010 W1011 W2005 T2005 T1010 T1011 module2 
+XB_23 Q1012 Q1013 Q2006 W1012 W1013 W2006 T2006 T1012 T1013 module2 
+XB_24 Q1014 Q1015 Q2007 W1014 W1015 W2007 T2007 T1014 T1015 module2 
+
+XB_25 Q2000 Q2001 Q3000 W2000 W2001 W3000 T3000 T2000 T2001 module2
+XB_26 Q2002 Q2003 Q3001 W2002 W2003 W3001 T3001 T2002 T2003 module2
+XB_27 Q2004 Q2005 Q3002 W2004 W2005 W3002 T3002 T2004 T2005 module2
+XB_28 Q2006 Q2007 Q3003 W2006 W2007 W3003 T3003 T2006 T2007 module2
+
+XB_29 Q3000 Q3001 Q4000 W3000 W3001 W4000 T4000 T3000 T3001 module2
+XB_30 Q3002 Q3003 Q4001 W3002 W3003 W4001 T4001 T3002 T3003 module2
+
+XB_31 Q4000 Q4001 Q W4000 W4001 W op0 T4000 T4001 module2
 
 
 
-
-
-
-Xnor1 s[31:24] s[23:16] s[15:8] s[7:0] o1[7:0] nor4
+Xnor1 S[31:24] S[23:16] S[15:8] S[7:0] o1[7:0] nor4
 Xnand2 o1[7:6] o1[5:4] o1[3:2] o1[1:0] o2[1:0] nand4
 Xnor3 o21 o20 z nor2
+
 Xoverflow A31 XB31 s31 v overflow
-.connect n s31
+
+.connect n S31
 .ends
-
-
